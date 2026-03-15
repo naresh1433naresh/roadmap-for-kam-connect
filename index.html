@@ -427,6 +427,34 @@
     line-height: 1.5;
   }
 
+  .topic-notes-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 7px;
+    padding: 3px 9px 3px 7px;
+    border-radius: 5px;
+    border: 1px solid rgba(0,212,160,0.3);
+    background: rgba(0,212,160,0.06);
+    color: #00d4a0;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    transition: all 0.18s;
+    width: fit-content;
+    cursor: pointer;
+  }
+  .topic-notes-link:hover {
+    background: rgba(0,212,160,0.15);
+    border-color: rgba(0,212,160,0.7);
+  }
+  .topic-notes-link svg {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+  }
+
   /* Resources section */
   .resources-section {
     margin-top: 48px;
@@ -624,7 +652,7 @@ const PHASES = [
   {
     id: 1, key: 'p1', name: "Foundations", weeks: "2–4 weeks", color: "#00d4a0",
     topics: [
-      { name: "Python Basics", sub: "Variables, loops, functions, OOP, modules" },
+      { name: "Python Basics", sub: "Variables, loops, functions, OOP, modules", link: "https://github.com/Debottam-Ghosh/NOTES-Complete_Python_Basic_to_Advanced/blob/main/A)%20Print()%20Function.md" },
       { name: "JavaScript / TypeScript", sub: "ES6+, async/await, types & interfaces" },
       { name: "Git & Version Control", sub: "clone, commit, push, branching, GitHub" },
       { name: "Linux / Terminal Basics", sub: "Shell commands, file navigation, env vars" },
@@ -790,6 +818,15 @@ function buildPhases() {
 function buildTopic(phase, t, ti) {
   const key = `${phase.key}-${ti}`;
   const isDone = doneSet.has(key);
+  const notesBtn = t.link ? `
+    <a class="topic-notes-link" href="${t.link}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M1 1h5l3 3v7H1z"/>
+        <path d="M6 1v3h4"/>
+        <path d="M3 6h4M3 8h3"/>
+      </svg>
+      notes
+    </a>` : '';
   return `
     <div class="topic-item ${isDone ? 'done' : ''}" data-key="${key}" style="--phase-color:${phase.color}">
       <div class="topic-check" style="${isDone ? `background:${phase.color}22;border-color:${phase.color}` : ''}">
@@ -800,6 +837,7 @@ function buildTopic(phase, t, ti) {
       <div class="topic-text">
         <div class="topic-name">${t.name}</div>
         <div class="topic-sub">${t.sub}</div>
+        ${notesBtn}
       </div>
     </div>
   `;
@@ -822,7 +860,6 @@ function updateTopic(el, isDone) {
     check.style.background = '';
     check.style.borderColor = '';
     svg.style.opacity = '0';
-    
   }
   // update side bar ::before color via inline style hack
   el.style.setProperty('--done-accent', isDone ? phase.color : 'transparent');
