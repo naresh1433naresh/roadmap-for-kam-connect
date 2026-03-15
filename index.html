@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KaamConnect — Learning Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #16161f;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --faint: #2a2a38;
+
+    --p1: #00d4a0;
+    --p2: #4fa8ff;
+    --p3: #ffb740;
+    --p4: #ff6eb4;
+    --p5: #a78bfa;
+    --p6: #ff7854;
+    --p7: #7ed321;
+
+    --font-display: 'Syne', sans-serif;
+    --font-body: 'Instrument Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BG noise texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* Ambient glow */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -30vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 60vh;
+    background: radial-gradient(ellipse, rgba(0,212,160,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 860px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── Header ── */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0 36px;
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--p1);
+  }
+
+  .logo span { color: var(--muted); font-weight: 400; margin-left: 6px; }
+
+  .topbar-actions { display: flex; align-items: center; gap: 12px; }
+
+  .btn-ghost {
+    background: none;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .btn-ghost:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+
+  /* ── Hero ── */
+  .hero { margin-bottom: 48px; }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--p1);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.1s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 5vw, 46px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--p1), var(--p2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 480px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.3s forwards;
+  }
+
+  /* ── Overall Progress ── */
+  .overall-progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 20px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+
+  .op-left { }
+  .op-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .op-bar-track {
+    height: 6px;
+    background: var(--faint);
+    border-radius: 99px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .op-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--p1), var(--p2));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+  .op-stats {
+    display: flex;
+    gap: 16px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .op-stats strong { color: var(--text); }
+
+  .op-right {
+    text-align: right;
+  }
+  .op-pct {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--p1);
+    line-height: 1;
+    transition: color 0.4s;
+  }
+  .op-pct-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── Filter bar ── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.5s forwards;
+  }
+
+  .filter-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .filter-btn:hover { border-color: var(--border2); color: var(--text); }
+  .filter-btn.active {
+    border-color: var(--p1);
+    color: var(--p1);
+    background: rgba(0,212,160,0.08);
+  }
+
+  /* ── Phase Blocks ── */
+  .phases { display: flex; flex-direction: column; gap: 20px; }
+
+  .phase {
+    opacity: 0;
+    animation: fadeUp 0.5s forwards;
+  }
+
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .phase-card:hover { border-color: var(--border2); }
+
+  .phase-head {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+  }
+  .phase-head:hover { background: var(--surface2); }
+
+  .phase-num {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid currentColor;
+  }
+
+  .phase-info { min-width: 0; }
+  .phase-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .phase-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 3px;
+  }
+  .phase-weeks {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .phase-mini-bar {
+    height: 3px;
+    width: 60px;
+    background: var(--faint);
+    border-radius: 99px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .phase-mini-fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s;
+    width: 0%;
+  }
+
+  .phase-count {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .phase-count strong { color: var(--text); }
+
+  .phase-chevron {
+    width: 18px;
+    height: 18px;
+    color: var(--muted);
+    transition: transform 0.25s;
+    flex-shrink: 0;
+  }
+  .phase-card.open .phase-chevron { transform: rotate(180deg); }
+
+  /* ── Topics ── */
+  .phase-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1);
+  }
+  .phase-card.open .phase-body { max-height: 2000px; }
+
+  .phase-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 22px;
+  }
+
+  .topics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    padding: 18px 22px 22px;
+  }
+
+  .topic-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 14px 14px 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: start;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+  .topic-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    border-radius: 0;
+  }
+  .topic-item:hover { border-color: var(--border2); background: var(--surface); }
+  .topic-item:hover::before { opacity: 1; }
+  .topic-item.done { opacity: 0.45; }
+  .topic-item.done::before { opacity: 1 !important; }
+
+  .topic-check {
+    width: 18px;
+    height: 18px;
+    border-radius: 5px;
+    border: 1.5px solid var(--border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .topic-item.done .topic-check {
+    border-color: transparent;
+  }
+  .topic-check svg {
+    width: 10px;
+    height: 10px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .topic-item.done .topic-check svg { opacity: 1; }
+
+  .topic-text { min-width: 0; }
+  .topic-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 3px;
+    line-height: 1.3;
+  }
+  .topic-item.done .topic-name { text-decoration: line-through; color: var(--muted); }
+  .topic-sub {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* Resources section */
+  .resources-section {
+    margin-top: 48px;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+  }
+
+  .resource-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    display: block;
+  }
+  .resource-card:hover { border-color: var(--border2); background: var(--surface2); transform: translateY(-1px); }
+  .resource-name {
+    font-family: var(--font-display);
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .resource-url {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  /* Tip bar */
+  .tip-bar {
+    margin-top: 36px;
+    background: linear-gradient(135deg, rgba(0,212,160,0.08), rgba(79,168,255,0.06));
+    border: 1px solid rgba(0,212,160,0.2);
+    border-radius: 14px;
+    padding: 18px 22px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.7s forwards;
+  }
+  .tip-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .tip-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .tip-text strong { color: var(--text); }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--faint); border-radius: 3px; }
+
+  /* Confetti particle */
+  .confetti-wrap {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    inset: 0;
+  }
+  .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    animation: fall 1s ease-in forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(60px) rotate(360deg); opacity: 0; }
+  }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    .overall-progress { grid-template-columns: 1fr; }
+    .op-right { text-align: left; }
+    .topics-grid { grid-template-columns: 1fr; }
+    .hero-title { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="logo">KaamConnect <span>/ Roadmap</span></div>
+    <div class="topbar-actions">
+      <button class="btn-ghost" id="reset-btn">Reset All</button>
+      <button class="btn-ghost" id="expand-btn">Expand All</button>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Full-Stack Learning Path</div>
+    <h1 class="hero-title">Your path to<br><em>shipping KaamConnect</em></h1>
+    <p class="hero-sub">7 phases. 36 topics. Check off each skill as you learn it. Click any topic card to mark it done.</p>
+  </div>
+
+  <!-- Overall Progress -->
+  <div class="overall-progress">
+    <div class="op-left">
+      <div class="op-label">Overall Progress</div>
+      <div class="op-bar-track"><div class="op-bar-fill" id="global-fill"></div></div>
+      <div class="op-stats">
+        <span><strong id="done-count">0</strong> done</span>
+        <span><strong id="remain-count">36</strong> remaining</span>
+        <span><strong id="week-est">16–25</strong> weeks</span>
+      </div>
+    </div>
+    <div class="op-right">
+      <div class="op-pct" id="global-pct">0%</div>
+      <div class="op-pct-label">complete</div>
+    </div>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="filter-bar" id="filter-bar">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="todo">To Do</button>
+    <button class="filter-btn" data-filter="done">Done</button>
+    <button class="filter-btn" data-filter="p1">Phase 1</button>
+    <button class="filter-btn" data-filter="p2">Phase 2</button>
+    <button class="filter-btn" data-filter="p3">Phase 3</button>
+    <button class="filter-btn" data-filter="p4">Phase 4</button>
+    <button class="filter-btn" data-filter="p5">Phase 5</button>
+    <button class="filter-btn" data-filter="p6">Phase 6</button>
+    <button class="filter-btn" data-filter="p7">Phase 7</button>
+  </div>
+
+  <!-- Phases -->
+  <div class="phases" id="phases-container"></div>
+
+  <!-- Resources -->
+  <div class="resources-section">
+    <div class="section-label">Learning Resources</div>
+    <div class="resources-grid" id="resources-grid"></div>
+  </div>
+
+  <!-- Tip -->
+  <div class="tip-bar">
+    <div class="tip-icon">💡</div>
+    <div class="tip-text">
+      <strong>Pro Tip:</strong> You don't need to master everything before starting. Follow along with the existing KaamConnect codebase as your reference — reading and running real code is one of the fastest ways to learn. Your progress is automatically saved in your browser.
+    </div>
+  </div>
+
+</div>
+
+<!-- Confetti container -->
+<div class="confetti-wrap" id="confetti-wrap"></div>
+
+<script>
+const PHASES = [
+  {
+    id: 1, key: 'p1', name: "Foundations", weeks: "2–4 weeks", color: "#00d4a0",
+    topics: [
+      { name: "Python Basics", sub: "Variables, loops, functions, OOP, modules" },
+      { name: "JavaScript / TypeScript", sub: "ES6+, async/await, types & interfaces" },
+      { name: "Git & Version Control", sub: "clone, commit, push, branching, GitHub" },
+      { name: "Linux / Terminal Basics", sub: "Shell commands, file navigation, env vars" },
+    ]
+  },
+  {
+    id: 2, key: 'p2', name: "Backend Development", weeks: "4–6 weeks", color: "#4fa8ff",
+    topics: [
+      { name: "FastAPI", sub: "Routes, request/response models, middleware" },
+      { name: "Pydantic", sub: "Data validation, schemas, model config" },
+      { name: "SQLAlchemy (Async)", sub: "ORM, models, relationships, async sessions" },
+      { name: "Alembic", sub: "DB migrations, alembic upgrade head" },
+      { name: "MySQL", sub: "SQL basics, joins, indexing" },
+      { name: "JWT Authentication", sub: "Token generation, python-jose, refresh tokens" },
+      { name: "REST API Design", sub: "CRUD, HTTP methods, status codes, versioning" },
+    ]
+  },
+  {
+    id: 3, key: 'p3', name: "Real-time & Background", weeks: "2–3 weeks", color: "#ffb740",
+    topics: [
+      { name: "WebSockets", sub: "FastAPI WS routes, broadcasting messages" },
+      { name: "Redis", sub: "Pub/Sub, key-value caching, redis.asyncio" },
+      { name: "Celery", sub: "Task queues, workers, Celery Beat" },
+    ]
+  },
+  {
+    id: 4, key: 'p4', name: "Mobile App Development", weeks: "4–6 weeks", color: "#ff6eb4",
+    topics: [
+      { name: "React Native", sub: "Components, props, state, StyleSheet" },
+      { name: "Expo", sub: "Managed workflow, expo CLI, device testing" },
+      { name: "React Navigation", sub: "Stack, Tab, Drawer navigators" },
+      { name: "Redux Toolkit", sub: "Store, slices, createAsyncThunk, selectors" },
+      { name: "Axios & React Query", sub: "API calls, caching, loading/error states" },
+      { name: "React Hook Form + Yup", sub: "Form handling, validation schemas" },
+      { name: "Socket.io-client", sub: "Connecting to WebSocket server from mobile" },
+      { name: "React Native Maps", sub: "Displaying maps and live location" },
+    ]
+  },
+  {
+    id: 5, key: 'p5', name: "Cloud & External Services", weeks: "2–3 weeks", color: "#a78bfa",
+    topics: [
+      { name: "AWS S3", sub: "Uploading files, signed URLs, boto3" },
+      { name: "Razorpay / Stripe", sub: "Payment orders, webhooks, SDK integration" },
+      { name: "Twilio", sub: "Sending SMS OTPs" },
+    ]
+  },
+  {
+    id: 6, key: 'p6', name: "DevOps & Deployment", weeks: "2–3 weeks", color: "#ff7854",
+    topics: [
+      { name: "Docker", sub: "Dockerfile, docker-compose, container networking" },
+      { name: "Nginx", sub: "Reverse proxy, HTTP/HTTPS configuration" },
+      { name: "Environment Variables", sub: ".env files, secrets management" },
+      { name: "pytest", sub: "Unit & integration tests for FastAPI" },
+    ]
+  },
+  {
+    id: 7, key: 'p7', name: "Advanced & Polish", weeks: "Ongoing", color: "#7ed321",
+    topics: [
+      { name: "Sentry", sub: "Error monitoring and alerting" },
+      { name: "Prometheus", sub: "API metrics and monitoring dashboards" },
+      { name: "Security", sub: "Rate limiting, sanitization, HTTPS, CORS" },
+      { name: "Performance", sub: "DB query optimization, Redis caching strategies" },
+    ]
+  }
+];
+
+const RESOURCES = [
+  { name: "FastAPI", url: "fastapi.tiangolo.com" },
+  { name: "React Native", url: "reactnative.dev" },
+  { name: "Expo", url: "docs.expo.dev" },
+  { name: "SQLAlchemy", url: "docs.sqlalchemy.org" },
+  { name: "Docker", url: "docs.docker.com/get-started" },
+  { name: "Redis", url: "redis.io/docs" },
+  { name: "Celery", url: "docs.celeryq.dev" },
+];
+
+const TOTAL = PHASES.reduce((a, p) => a + p.topics.length, 0);
+
+// Load saved state
+let doneSet = new Set();
+try {
+  const saved = localStorage.getItem('kc_roadmap_v2');
+  if (saved) doneSet = new Set(JSON.parse(saved));
+} catch(e) {}
+
+function save() {
+  try { localStorage.setItem('kc_roadmap_v2', JSON.stringify([...doneSet])); } catch(e) {}
+}
+
+let activeFilter = 'all';
+let allExpanded = false;
+
+// ── Build UI ──
+function buildPhases() {
+  const container = document.getElementById('phases-container');
+  container.innerHTML = '';
+
+  PHASES.forEach((phase, pi) => {
+    const card = document.createElement('div');
+    card.className = 'phase';
+    card.style.animationDelay = (0.55 + pi * 0.07) + 's';
+    card.dataset.phase = phase.key;
+
+    const doneInPhase = phase.topics.filter((_, ti) => doneSet.has(`${phase.key}-${ti}`)).length;
+    const pct = Math.round(doneInPhase / phase.topics.length * 100);
+
+    card.innerHTML = `
+      <div class="phase-card ${pi === 0 ? 'open' : ''}" data-phase-key="${phase.key}">
+        <div class="phase-head" data-toggle="${phase.key}">
+          <div class="phase-num" style="color:${phase.color};border-color:${phase.color}33">P${phase.id}</div>
+          <div class="phase-info">
+            <div class="phase-title">${phase.name}</div>
+            <div class="phase-meta">
+              <span class="phase-weeks">${phase.weeks}</span>
+              <div class="phase-mini-bar"><div class="phase-mini-fill" style="background:${phase.color};width:${pct}%"></div></div>
+              <span class="phase-count"><strong id="count-${phase.key}">${doneInPhase}</strong>/${phase.topics.length}</span>
+            </div>
+          </div>
+          <div style="width:48px;text-align:right;font-family:var(--font-mono);font-size:11px;color:${pct===100?phase.color:'var(--muted)'}">
+            ${pct}%
+          </div>
+          <svg class="phase-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="phase-body">
+          <div class="phase-divider"></div>
+          <div class="topics-grid" id="grid-${phase.key}">
+            ${phase.topics.map((t, ti) => buildTopic(phase, t, ti)).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+
+  // Toggle handlers
+  document.querySelectorAll('[data-toggle]').forEach(el => {
+    el.addEventListener('click', () => {
+      const key = el.dataset.toggle;
+      const card = document.querySelector(`[data-phase-key="${key}"]`);
+      card.classList.toggle('open');
+    });
+  });
+
+  // Topic click handlers
+  document.querySelectorAll('.topic-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const key = el.dataset.key;
+      if (doneSet.has(key)) doneSet.delete(key);
+      else {
+        doneSet.add(key);
+        burst(el);
+      }
+      save();
+      updateTopic(el, doneSet.has(key));
+      updateProgress();
+      applyFilter(activeFilter);
+    });
+  });
+}
+
+function buildTopic(phase, t, ti) {
+  const key = `${phase.key}-${ti}`;
+  const isDone = doneSet.has(key);
+  return `
+    <div class="topic-item ${isDone ? 'done' : ''}" data-key="${key}" style="--phase-color:${phase.color}">
+      <div class="topic-check" style="${isDone ? `background:${phase.color}22;border-color:${phase.color}` : ''}">
+        <svg viewBox="0 0 12 12" fill="none" stroke="${phase.color}" stroke-width="2" stroke-linecap="round">
+          <path d="M2 6l3 3 5-5"/>
+        </svg>
+      </div>
+      <div class="topic-text">
+        <div class="topic-name">${t.name}</div>
+        <div class="topic-sub">${t.sub}</div>
+      </div>
+    </div>
+  `;
+}
+
+function updateTopic(el, isDone) {
+  const key = el.dataset.key;
+  // find phase color
+  const phaseKey = key.split('-')[0];
+  const phase = PHASES.find(p => p.key === phaseKey);
+  const check = el.querySelector('.topic-check');
+  const svg = el.querySelector('.topic-check svg');
+
+  el.classList.toggle('done', isDone);
+  if (isDone) {
+    check.style.background = phase.color + '22';
+    check.style.borderColor = phase.color;
+    svg.style.opacity = '1';
+  } else {
+    check.style.background = '';
+    check.style.borderColor = '';
+    svg.style.opacity = '0';
+  }
+  // update side bar ::before color via inline style hack
+  el.style.setProperty('--done-accent', isDone ? phase.color : 'transparent');
+}
+
+function updateProgress() {
+  const done = doneSet.size;
+  const pct = Math.round(done / TOTAL * 100);
+
+  document.getElementById('global-fill').style.width = pct + '%';
+  document.getElementById('global-pct').textContent = pct + '%';
+  document.getElementById('done-count').textContent = done;
+  document.getElementById('remain-count').textContent = TOTAL - done;
+
+  // Update phase counts
+  PHASES.forEach(phase => {
+    const doneInPhase = phase.topics.filter((_, ti) => doneSet.has(`${phase.key}-${ti}`)).length;
+    const el = document.getElementById(`count-${phase.key}`);
+    if (el) el.textContent = doneInPhase;
+    // update mini bar
+    const card = document.querySelector(`[data-phase-key="${phase.key}"]`);
+    if (card) {
+      const fill = card.querySelector('.phase-mini-fill');
+      if (fill) fill.style.width = Math.round(doneInPhase / phase.topics.length * 100) + '%';
+      const pctEl = card.querySelector('[id^="count-"]')?.closest('.phase-count')?.nextElementSibling;
+    }
+    // update pct label in header
+    const heads = document.querySelectorAll(`[data-phase-key="${phase.key}"] .phase-head > div:nth-child(3)`);
+    heads.forEach(h => {
+      const p = Math.round(doneInPhase / phase.topics.length * 100);
+      h.textContent = p + '%';
+      h.style.color = p === 100 ? phase.color : 'var(--muted)';
+    });
+  });
+
+  // Color the pct based on milestone
+  const pctEl = document.getElementById('global-pct');
+  if (pct >= 100) pctEl.style.color = '#7ed321';
+  else if (pct >= 70) pctEl.style.color = '#4fa8ff';
+  else if (pct >= 40) pctEl.style.color = '#ffb740';
+  else pctEl.style.color = '#00d4a0';
+}
+
+function applyFilter(filter) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === filter));
+
+  document.querySelectorAll('.phase').forEach(ph => {
+    const phaseKey = ph.dataset.phase;
+    if (filter.startsWith('p') && filter !== 'p' && filter !== 'p1'.slice(0,-1)) {
+      // phase filter
+      const isThisPhase = phaseKey === filter || filter === 'all';
+      if (filter.match(/^p[1-7]$/) && filter !== 'all') {
+        ph.classList.toggle('hidden', phaseKey !== filter);
+      } else {
+        ph.classList.remove('hidden');
+      }
+    }
+    if (filter === 'all') ph.classList.remove('hidden');
+    if (filter === 'todo' || filter === 'done') ph.classList.remove('hidden');
+  });
+
+  // Handle todo/done filter on topic items
+  document.querySelectorAll('.topic-item').forEach(item => {
+    const isDone = item.classList.contains('done');
+    if (filter === 'todo') item.classList.toggle('hidden', isDone);
+    else if (filter === 'done') item.classList.toggle('hidden', !isDone);
+    else item.classList.remove('hidden');
+  });
+}
+
+// Mini confetti burst
+function burst(el) {
+  const rect = el.getBoundingClientRect();
+  const colors = ['#00d4a0','#4fa8ff','#ffb740','#ff6eb4','#a78bfa'];
+  const wrap = document.getElementById('confetti-wrap');
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left:${rect.left + rect.width/2 + (Math.random()-0.5)*40}px;
+      top:${rect.top + (Math.random()*rect.height)}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${0.5+Math.random()*0.5}s;
+      animation-delay:${Math.random()*0.1}s;
+    `;
+    wrap.appendChild(p);
+    setTimeout(() => p.remove(), 1200);
+  }
+}
+
+// Build resources
+function buildResources() {
+  const grid = document.getElementById('resources-grid');
+  RESOURCES.forEach(r => {
+    const a = document.createElement('a');
+    a.className = 'resource-card';
+    a.href = 'https://' + r.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.innerHTML = `<div class="resource-name">${r.name}</div><div class="resource-url">${r.url}</div>`;
+    grid.appendChild(a);
+  });
+}
+
+// Controls
+document.getElementById('filter-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (btn) applyFilter(btn.dataset.filter);
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (!confirm('Reset all progress? This cannot be undone.')) return;
+  doneSet.clear();
+  save();
+  buildPhases();
+  updateProgress();
+  applyFilter(activeFilter);
+});
+
+document.getElementById('expand-btn').addEventListener('click', () => {
+  allExpanded = !allExpanded;
+  document.querySelectorAll('.phase-card').forEach(c => {
+    c.classList.toggle('open', allExpanded);
+  });
+  document.getElementById('expand-btn').textContent = allExpanded ? 'Collapse All' : 'Expand All';
+});
+
+// Init
+buildPhases();
+buildResources();
+updateProgress();
+
+// Topic ::before color via CSS var
+document.addEventListener('click', () => {});
+// Add inline style for topic accent
+document.querySelectorAll('.topic-item').forEach(el => {
+  const phaseKey = el.dataset.key.split('-')[0];
+  const phase = PHASES.find(p => p.key === phaseKey);
+  if (phase) el.style.setProperty('--phase-color', phase.color);
+  el.style.cssText += ``;
+});
+
+// Patch topic ::before via dynamic style
+const styleEl = document.createElement('style');
+styleEl.textContent = `.topic-item::before { background: var(--phase-color, var(--p1)); }`;
+document.head.appendChild(styleEl);
+</script>
+</body>
+</html>
